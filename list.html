@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Stagiaires</title>
+</head>
+<body>
+    <h1>Liste des Stagiaires</h1>
+    <ul id="liste"></ul>
+
+    <script>
+        // عند تحميل الصفحة
+        window.onload = async () => {
+            const res = await fetch('/api/stagiaires');
+            const stagiaires = await res.json();
+
+            const liste = document.getElementById('liste');
+            stagiaires.forEach(stagiaire => {
+                const li = document.createElement('li');
+                li.textContent = `${stagiaire.nom} - ${stagiaire.email} (depuis ${stagiaire.source})`;
+                liste.appendChild(li);
+            });
+        };
+    </script>
+</body>
+</html>

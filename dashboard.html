@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard des Stagiaires</title>
+    <style>
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        button {
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Liste des Stagiaires</h1>
+    <table id="tableau">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Source</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        async function chargerStagiaires() {
+            const res = await fetch('/api/stagiaires');
+            const stagiaires = await res.json();
+
+            const tbody = document.querySelector('#tableau tbody');
+            tbody.innerHTML = '';
+
+            stagiaires.forEach((stagiaire, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${stagiaire.nom}</td>
+                    <td>${stagiaire.email}</td>
+                    <td>${stagiaire.source || 'inconnu'}</td>
+                    <td><button onclick="supprimer(${index})">Supprimer</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function supprimer(index) {
+            const res = await fetch(`/api/stagiaires/${index}`, {
+                method: 'DELETE'
+            });
+            const data = await res.json();
+            alert(data.message);
+            chargerStagiaires();
+        }
+
+        window.onload = chargerStagiaires;
+    </script>
+</body>
+</html>
